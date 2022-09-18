@@ -1,4 +1,4 @@
-package com.epozen.meslogparser;
+package com.jawf.parser;
 
 import java.io.PushbackReader;
 import java.io.StringReader;
