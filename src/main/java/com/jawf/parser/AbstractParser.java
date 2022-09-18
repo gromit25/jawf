@@ -6,18 +6,29 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class AbstractParser {
+/**
+ * 
+ * @author jmsohn
+ */
+public abstract class AbstractParser<T> {
 	
+	/** */
+	private TreeNode<T> node;
+	/** */
 	private HashMap<String, HashMap<String, ArrayList<Method>>> transferHandlers;
 
 	/**
 	 * 생성자
-	 * 
 	 */
 	public AbstractParser() throws Exception {
 		
+		// 
+		this.node = new TreeNode<T>();
+		
+		// transfer event handler 목록 생성
 		this.transferHandlers = new HashMap<String, HashMap<String, ArrayList<Method>>>();
 		
+		// 하위 클래스에서 구현된 transfer event handler 메소드를 목록에 등록함
 		for(Method method: this.getClass().getMethods()) {
 			
 			TransferEventHandler handlerAnnotation = method.getAnnotation(TransferEventHandler.class);
@@ -86,6 +97,7 @@ public abstract class AbstractParser {
 	 */
 	protected void init() {
 		// Do Nothing
+		// 하위 클래스에서 필요시 구현
 	}
 	
 	/**
@@ -93,8 +105,15 @@ public abstract class AbstractParser {
 	 */
 	protected void processEod() {
 		// Do Nothing
+		// 하위 클래스에서 필요시 구현
 	}
 	
+	/**
+	 * 
+	 * @param source
+	 * @param target
+	 * @return
+	 */
 	private ArrayList<Method> getHandlers(String source, String target) throws Exception {
 		
 		// 핸들러 목록에 소스가 없는 경우, 빈 array 반환
@@ -116,9 +135,9 @@ public abstract class AbstractParser {
 	 * 
 	 * @param in
 	 */
-	protected void _parse(PushbackReader in) throws Exception {
+	protected TreeNode<T> parse(PushbackReader in) throws Exception {
 		
-		//
+		// 최초 시작시 실행
 		this.init();
 		
 		//
@@ -159,9 +178,11 @@ public abstract class AbstractParser {
 			read = in.read();
 		} // End of while
 		
+		// End of data 발생시, 처리 수행
 		this.processEod();
 		
-		//
+		// 종료 상태 여부 확인
+		// 종료 상태가 아닌 경우, 예외 발생
 		boolean isEndStatus = false;
 		for(String endStatus: this.getEndStatus()) {
 			if(status.equals(endStatus) == true) {
@@ -174,10 +195,29 @@ public abstract class AbstractParser {
 			throw new Exception("Unexpected end status:" + status);
 		}
 		
-	} // End of parser
+		// 생성된 파싱 트리를 반환
+		return this.node;
+		
+	} // End of parse
 	
 	/**
-	 * 상태 전환시 
+	 * 
+	 * @param data
+	 */
+	protected void setNodeData(T data) {
+		this.node.setData(data);
+	}
+	
+	/**
+	 * 
+	 * @param data
+	 */
+	protected void addChild(T data) {
+		this.node.addChild(new TreeNode<T>(data));
+	}
+	
+	/**
+	 * 상태 전환시 발생 Event 클래스
 	 * @author jmsohn
 	 */
 	protected static class Event {

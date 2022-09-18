@@ -2,14 +2,27 @@ package com.jawf.parser;
 
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author jmsohn
+ */
 public class TransferFunctionBuilder {
 	
 	private ArrayList<String[]> specs;
 	
+	/**
+	 * 
+	 */
 	public TransferFunctionBuilder() {
 		this.specs = new ArrayList<String[]>();
 	}
 	
+	/**
+	 * 
+	 * @param pattern
+	 * @param nextStatus
+	 * @return
+	 */
 	public TransferFunctionBuilder add(String pattern, String nextStatus) throws Exception {
 		
 		String[] spec = new String[2];
@@ -21,6 +34,10 @@ public class TransferFunctionBuilder {
 		return this;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public ArrayList<TransferFunction> build() throws Exception {
 		
 		ArrayList<TransferFunction> transferFunctions = new ArrayList<TransferFunction>();
