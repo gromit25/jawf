@@ -155,12 +155,17 @@ public abstract class AbstractParser<T> {
 				throw new Exception("invalid status: " + status);
 			}
 			
+			boolean isMatched = false;
+			
 			//
 			for(TransferFunction transferFunction: this.getTransferMap().get(status)) {
 				if(transferFunction.isValid(ch) == true) {
 					
+					// 유효한 전이함수(transfer function)이 매치되었을 경우 true로 설정함
+					isMatched = true;
+					
 					// 이벤트 생성
-					Event event = new Event(ch, in); 
+					Event event = new Event(ch, in);
 					
 					// 이벤트 처리함수 호출
 					String nextStatus = transferFunction.getNextStatus();
@@ -169,13 +174,22 @@ public abstract class AbstractParser<T> {
 						handler.invoke(this, event);
 					}
 					
+					// 다음 상태로 상태를 변경
 					status = nextStatus;
+					
+					// for문 종료 -> 다른 전이함수는 검사하지 않음
 					break;
 				}
 			}
 			
-			//
+			// 매치되는 전이함수가 없을 경우 예외 발생
+			if(isMatched == false) {
+				throw new Exception("Unexpected char: " + ch + ", status:" + status);
+			}
+			
+			// 다음 글자를 읽어옴
 			read = in.read();
+			
 		} // End of while
 		
 		// End of data 발생시, 처리 수행
