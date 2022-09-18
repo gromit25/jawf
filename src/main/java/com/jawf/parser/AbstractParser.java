@@ -95,7 +95,7 @@ public abstract class AbstractParser<T> {
 	/**
 	 * 
 	 */
-	protected void init() {
+	protected void init() throws Exception {
 		// Do Nothing
 		// 하위 클래스에서 필요시 구현
 	}
@@ -103,7 +103,7 @@ public abstract class AbstractParser<T> {
 	/**
 	 * 
 	 */
-	protected void processEod() {
+	protected void processEod() throws Exception {
 		// Do Nothing
 		// 하위 클래스에서 필요시 구현
 	}
