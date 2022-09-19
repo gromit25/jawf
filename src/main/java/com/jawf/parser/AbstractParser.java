@@ -1,6 +1,7 @@
 package com.jawf.parser;
 
 import java.io.PushbackReader;
+import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -133,9 +134,19 @@ public abstract class AbstractParser<T> {
 	
 	/**
 	 * 
+	 */
+	public TreeNode<T> parse(String script) throws Exception {
+		
+		PushbackReader in = new PushbackReader(new StringReader(script));
+		return this.parse(in);
+		
+	}
+	
+	/**
+	 * 
 	 * @param in
 	 */
-	protected TreeNode<T> parse(PushbackReader in) throws Exception {
+	public TreeNode<T> parse(PushbackReader in) throws Exception {
 		
 		// 최초 시작시 실행
 		this.init();

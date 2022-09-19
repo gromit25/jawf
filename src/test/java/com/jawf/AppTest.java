@@ -1,5 +1,7 @@
 package com.jawf;
 
+import com.jawf.parser.attrscript.NumberParser;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -7,9 +9,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class AppTest 
-    extends TestCase
-{
+public class AppTest extends TestCase {
     /**
      * Create the test case
      *
@@ -31,8 +31,19 @@ public class AppTest
     /**
      * Rigourous Test :-)
      */
-    public void testApp()
-    {
-        assertTrue( true );
+    public void testApp() {
+    	
+    	try{
+    		
+	    	NumberParser parser = new NumberParser();
+	    	parser.parse("10.1");
+	    	
+	    	System.out.println(parser.getNumber());
+	    	
+    	} catch(Exception ex) {
+    		ex.printStackTrace();
+    	}
+    	
+	    assertTrue(true);
     }
 }
