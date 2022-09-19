@@ -1,4 +1,4 @@
-package com.epozen.meslogparser;
+package com.jawf;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

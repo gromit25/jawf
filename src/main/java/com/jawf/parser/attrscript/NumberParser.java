@@ -72,18 +72,8 @@ public class NumberParser extends AbstractParser<Instruction> {
 		return transferMap;
 	}
 	
-	@TransferEventHandler(source={"START", "NUMBER"}, target="NUMBER")
+	@TransferEventHandler(source={"START", "NUMBER", "DOT", "FLOATING_NUMBER"}, target={"NUMBER", "DOT", "FLOATING_NUMBER"})
 	private void handleNumber(Event event) {
-		this.buffer.append(event.getChar());
-	}
-	
-	@TransferEventHandler(source="NUMBER", target="DOT")
-	private void handleDot(Event event) {
-		this.buffer.append(event.getChar());
-	}
-	
-	@TransferEventHandler(source={"DOT", "FLOATING_NUMBER"}, target="FLOATING_NUMBER")
-	private void handleFloatingNumber(Event event) {
 		this.buffer.append(event.getChar());
 	}
 	
