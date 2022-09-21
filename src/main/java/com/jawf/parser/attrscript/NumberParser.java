@@ -76,7 +76,7 @@ public class NumberParser extends AbstractParser<Instruction> {
 			source={"START", "NUMBER", "DOT", "FLOATING_NUMBER"},
 			target={"NUMBER", "DOT", "FLOATING_NUMBER"}
 	)
-	private void handleNumber(Event event) {
+	public void handleNumber(Event event) {
 		this.buffer.append(event.getChar());
 	}
 	
