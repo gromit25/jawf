@@ -138,6 +138,21 @@ public class TransferFunction {
 	}
 	
 	/**
+	 * 모든 문자 일치(.) 클래스
+	 * @author jmsohn
+	 */
+	private static class DotPatternChecker implements PatternChecker {
+		
+		public boolean isValid(char ch) {
+			return true;
+		}
+		
+		public String toString() {
+			return "dot";
+		}
+	}
+	
+	/**
 	 * 문자가 범위내에 있는지 검사하는 클래스
 	 * @author jmsohn
 	 */
@@ -208,6 +223,8 @@ public class TransferFunction {
 					} else {
 						if(ch == '^') {
 							not = true;
+						} else if(ch =='.') {
+							checkers.add(new TransferFunction.DotPatternChecker());
 						} else {
 							preCh = ch;
 							checkers.add(new TransferFunction.CharPatternChecker(ch));
