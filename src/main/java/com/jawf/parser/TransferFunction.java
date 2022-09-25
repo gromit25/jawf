@@ -193,14 +193,25 @@ public class TransferFunction {
 	 */
 	private static class CharPatternParser {
 		
+		/**
+		 * 
+		 * @author jmsohn
+		 */
 		enum ParsingStatus {
 			START,
 			CHAR,
+			//QUANTIFIER,	// 수량자 예비
 			ESCAPE,
+			
 			RANGE,
 			UPPER_RANGE_ESCAPE
 		}
 		
+		/**
+		 * 
+		 * @param patternStr
+		 * @return
+		 */
 		static CharPattern parse(String patternStr) throws Exception {
 						
 			ArrayList<PatternChecker> checkers = new ArrayList<PatternChecker>();
@@ -227,7 +238,6 @@ public class TransferFunction {
 							checkers.add(new TransferFunction.DotPatternChecker());
 						} else {
 							preCh = ch;
-							checkers.add(new TransferFunction.CharPatternChecker(ch));
 						}
 						
 						status = ParsingStatus.CHAR;
@@ -242,7 +252,6 @@ public class TransferFunction {
 						status = ParsingStatus.RANGE;
 					} else {
 						preCh = ch;
-						checkers.add(new TransferFunction.CharPatternChecker(ch));
 					}
 					
 					break;
