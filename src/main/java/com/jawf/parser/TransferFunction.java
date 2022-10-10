@@ -200,11 +200,12 @@ public class TransferFunction {
 		enum ParsingStatus {
 			START,
 			CHAR,
-			//QUANTIFIER,	// 수량자 예비
 			ESCAPE,
-			
-			RANGE,
-			UPPER_RANGE_ESCAPE
+			LOWER_CHAR,	// START OF RANGE
+			LOWER_ESCAPE,
+			RANGE_MARK,
+			UPPER_CHAR,
+			UPPER_ESCAPE
 		}
 		
 		/**
@@ -213,15 +214,21 @@ public class TransferFunction {
 		 * @return
 		 */
 		static CharPattern parse(String patternStr) throws Exception {
-						
-			ArrayList<PatternChecker> checkers = new ArrayList<PatternChecker>();
 			
-			ParsingStatus status = ParsingStatus.START;
+			ArrayList<PatternChecker> checkers = new ArrayList<PatternChecker>();
 			
 			PushbackReader in = new PushbackReader(new StringReader(patternStr));
 			int read = in.read();
-			char preCh = (char)read;
+			
+			// not 연산 여부
 			boolean not = false;
+			
+			//
+			boolean isEscaped = false;
+			int preChar = -1;
+			
+			//
+			ParsingStatus status = ParsingStatus.START;
 			
 			while(read != -1) {
 				
@@ -229,54 +236,108 @@ public class TransferFunction {
 				
 				switch(status) {
 				case START:
-					if(ch == '\\') {
-						status = ParsingStatus.ESCAPE;
+					
+					if(ch == '^') {
+						not = true;
+					} else if (ch == '-') {
+						throw new Exception("Unexpected char: -");
 					} else {
-						if(ch == '^') {
-							not = true;
-						} else if(ch =='.') {
-							checkers.add(new TransferFunction.DotPatternChecker());
-						} else {
-							preCh = ch;
-						}
-						
-						status = ParsingStatus.CHAR;
+						in.unread(read);
 					}
+					
+					status = ParsingStatus.CHAR;
 					
 					break;
 					
 				case CHAR:
+					
 					if(ch == '\\') {
+						
 						status = ParsingStatus.ESCAPE;
+						
 					} else if (ch == '-') {
-						status = ParsingStatus.RANGE;
+						
+						System.out.println((char)read);
+						System.out.println((char)preChar);
+						
+						in.unread(read);
+						in.unread(preChar);
+						
+						if(isEscaped == true) {
+							in.unread((int)'\\');
+						}
+						
+						status = ParsingStatus.LOWER_CHAR;
+						
+					} else if(ch == '.') {
+						
+						checkers.add(new TransferFunction.DotPatternChecker());
+						
+						isEscaped = false;
+						preChar = read;
+						
 					} else {
-						preCh = ch;
+						
+						checkers.add(new TransferFunction.CharPatternChecker(ch));
+						
+						isEscaped = false;
+						preChar = read;
+
 					}
 					
 					break;
 					
 				case ESCAPE:
-					preCh = ch;
+					
 					checkers.add(new TransferFunction.CharPatternChecker(ch));
+					
+					isEscaped = true;
+					preChar = read;
 					status = ParsingStatus.CHAR;
 					
 					break;
 					
-				case RANGE:
+				case LOWER_CHAR:
+					
 					if(ch == '\\') {
-						status = ParsingStatus.UPPER_RANGE_ESCAPE;
+						status = ParsingStatus.LOWER_ESCAPE;
+					} else if(ch == '.' || ch == '-') {
+						throw new Exception("Unexpected Char: " + ch);
 					} else {
-						checkers.remove(checkers.size() - 1);
-						checkers.add(new TransferFunction.RangePatternChecker(preCh, ch));
+						preChar = read;
+						status = ParsingStatus.RANGE_MARK;
+					}
+					
+					break;
+				
+				case LOWER_ESCAPE:
+					
+					preChar = read;
+					status = ParsingStatus.RANGE_MARK;
+					
+					break;
+					
+				case RANGE_MARK:
+					
+					if(ch != '-') {
+						throw new Exception("Unexpected Char: " + ch);
+					}
+					
+					break;
+					
+				case UPPER_CHAR:
+					
+					if(ch == '\\') {
+						status = ParsingStatus.UPPER_ESCAPE;
+					} else {
+						checkers.add(new TransferFunction.RangePatternChecker((char)preChar, ch));
 						status = ParsingStatus.CHAR;
 					}
 					
 					break;
 					
-				case UPPER_RANGE_ESCAPE:
-					checkers.remove(checkers.size() - 1);
-					checkers.add(new TransferFunction.RangePatternChecker(preCh, ch));
+				case UPPER_ESCAPE:
+					checkers.add(new TransferFunction.RangePatternChecker((char)preChar, ch));
 					status = ParsingStatus.CHAR;
 					break;
 					
