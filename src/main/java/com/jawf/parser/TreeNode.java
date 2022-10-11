@@ -37,7 +37,7 @@ public class TreeNode<T> {
 	}
 	
 	/**
-	 * 
+	 * 자식 노드 추가
 	 * @param node
 	 */
 	public void addChild(TreeNode<T> node) {
@@ -45,21 +45,23 @@ public class TreeNode<T> {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * post order로 방문
+	 * @return post order로 방문한 목록
 	 */
 	public ArrayList<T> travelPostOrder() {
 		
-		//
+		// post order로 방문한 목록 변수
 		ArrayList<T> list = new ArrayList<T>();
+		
+		// 자식 노드 방문
 		for(TreeNode<T> child: this.childs) {
 			list.addAll(child.travelPostOrder());
 		}
 		
-		//
+		// 현재 노드 데이터 추가
 		list.add(this.data);
 		
-		//
+		// 방문 목록 반환
 		return list;
 	}
 
