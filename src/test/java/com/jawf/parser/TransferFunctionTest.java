@@ -29,11 +29,12 @@ public class TransferFunctionTest extends TestCase {
     /**
      * 
      */
-    public void testOne() {
+    public void test1() {
     	
     	try {
     		
     		TransferFunction tfunc = new TransferFunction("a", "");
+    		
     		assertTrue(tfunc.isValid('a'));
     		assertFalse(tfunc.isValid('b'));
     		
@@ -46,11 +47,12 @@ public class TransferFunctionTest extends TestCase {
     	
     }
     
-    public void testTwo() {
+    public void test2() {
     	
     	try {
     		
     		TransferFunction tfunc = new TransferFunction(".", "");
+    		
     		assertTrue(tfunc.isValid('a'));
     		assertTrue(tfunc.isValid('b'));
     		assertTrue(tfunc.isValid('#'));
@@ -65,12 +67,36 @@ public class TransferFunctionTest extends TestCase {
     	
     }
     
-    public void testThree() {
+    public void test3() {
     	
     	try {
     		
     		TransferFunction tfunc = new TransferFunction("#a-z", "");
+    		
     		assertTrue(tfunc.isValid('a'));
+    		assertTrue(tfunc.isValid('#'));
+    		assertTrue(tfunc.isValid('d'));
+    		assertTrue(tfunc.isValid('z'));
+    		assertFalse(tfunc.isValid('A'));
+    		
+    	} catch(Exception ex) {
+    		
+    		ex.printStackTrace();
+    		assertTrue(false);
+    		
+    	}
+    	
+    }
+    
+    public void test4() {
+    	
+    	try {
+    		
+    		TransferFunction tfunc = new TransferFunction("\\a-\\z", "");
+    		
+    		assertTrue(tfunc.isValid('a'));
+    		assertTrue(tfunc.isValid('d'));
+    		assertTrue(tfunc.isValid('z'));
     		assertFalse(tfunc.isValid('A'));
     		
     	} catch(Exception ex) {

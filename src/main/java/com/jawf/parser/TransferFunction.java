@@ -217,7 +217,7 @@ public class TransferFunction {
 			
 			ArrayList<PatternChecker> checkers = new ArrayList<PatternChecker>();
 			
-			PushbackReader in = new PushbackReader(new StringReader(patternStr));
+			PushbackReader in = new PushbackReader(new StringReader(patternStr), 16);
 			int read = in.read();
 			
 			// not 연산 여부
@@ -256,9 +256,6 @@ public class TransferFunction {
 						status = ParsingStatus.ESCAPE;
 						
 					} else if (ch == '-') {
-						
-						System.out.println((char)read);
-						System.out.println((char)preChar);
 						
 						in.unread(read);
 						in.unread(preChar);
@@ -322,6 +319,8 @@ public class TransferFunction {
 					if(ch != '-') {
 						throw new Exception("Unexpected Char: " + ch);
 					}
+					
+					status = ParsingStatus.UPPER_CHAR;
 					
 					break;
 					
