@@ -12,7 +12,9 @@ import java.util.HashMap;
  * @author jmsohn
  */
 public abstract class AbstractParser<T> {
-	
+
+	/** */
+	private String status;
 	/** */
 	private TreeNode<T> node;
 	/** */
@@ -153,7 +155,7 @@ public abstract class AbstractParser<T> {
 		
 		//
 		int read = in.read();
-		String status = this.getStartStatus();
+		this.status = this.getStartStatus();
 		
 		//
 		//
@@ -162,14 +164,14 @@ public abstract class AbstractParser<T> {
 			char ch = (char)read;
 			
 			//
-			if(this.getTransferMap().containsKey(status) == false) {
-				throw new Exception("invalid status: " + status);
+			if(this.getTransferMap().containsKey(this.status) == false) {
+				throw new Exception("invalid status: " + this.status);
 			}
 			
 			boolean isMatched = false;
 			
 			//
-			for(TransferFunction transferFunction: this.getTransferMap().get(status)) {
+			for(TransferFunction transferFunction: this.getTransferMap().get(this.status)) {
 				if(transferFunction.isValid(ch) == true) {
 					
 					// 유효한 전이함수(transfer function)이 매치되었을 경우 true로 설정함
@@ -180,13 +182,13 @@ public abstract class AbstractParser<T> {
 					
 					// 이벤트 처리함수 호출
 					String nextStatus = transferFunction.getNextStatus();
-					ArrayList<Method> handlers = this.getHandlers(status, nextStatus);
+					ArrayList<Method> handlers = this.getHandlers(this.status, nextStatus);
 					for(Method handler: handlers) {
 						handler.invoke(this, event);
 					}
 					
 					// 다음 상태로 상태를 변경
-					status = nextStatus;
+					this.status = nextStatus;
 					
 					// for문 종료 -> 다른 전이함수는 검사하지 않음
 					break;
@@ -195,7 +197,7 @@ public abstract class AbstractParser<T> {
 			
 			// 매치되는 전이함수가 없을 경우 예외 발생
 			if(isMatched == false) {
-				throw new Exception("Unexpected char: " + ch + ", status:" + status);
+				throw new Exception("Unexpected char: " + ch + ", status:" + this.status);
 			}
 			
 			// 다음 글자를 읽어옴
@@ -224,6 +226,31 @@ public abstract class AbstractParser<T> {
 		return this.node;
 		
 	} // End of parse
+	
+	/**
+	 * 현재 파싱 상태가 종료에 속하는지 여부 반환
+	 * 현재 파싱 상태가 null 일 경우, false 반환
+	 * 종료 상태 목록이 null 일 경우, false 반환
+	 * @return 현재 파싱 상태가 종료에 속하는지 여부(속할 경우 true)
+	 */
+	protected boolean isEndStatus() {
+		
+		if(this.status == null) {
+			return false;
+		}
+		
+		if(this.getEndStatus() == null) {
+			return false;
+		}
+		
+		for(String endStatus: this.getEndStatus()) {
+			if(endStatus.equals(this.status) == true) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
 	/**
 	 * 

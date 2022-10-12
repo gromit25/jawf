@@ -20,7 +20,7 @@ public class StringParser extends AbstractParser<Instruction> {
 
 	@Override
 	protected String[] getEndStatus() {
-		return new String[] {};
+		return new String[] {"END"};
 	}
 
 	@Override
@@ -30,12 +30,13 @@ public class StringParser extends AbstractParser<Instruction> {
 		
 		transferMap.put("START", new TransferFunctionBuilder()
 				.add("\"", "IN_STR")
+				.add("^\"", "FAIL")
 				.build());
 		
 		transferMap.put("IN_STR", new TransferFunctionBuilder()
 				.add("\\", "ESCAPE")
 				.add("\"", "END")
-				.add("^\"\\", "IN_STR")
+				.add("^\\\"", "IN_STR")
 				.build());
 		
 		transferMap.put("ESCAPE", new TransferFunctionBuilder()
@@ -43,6 +44,13 @@ public class StringParser extends AbstractParser<Instruction> {
 				.build());
 		
 		return transferMap;
+	}
+	
+	@Override
+	protected void processEod() throws Exception {
+		if(this.isEndStatus() == false) {
+			throw new Exception("Unexpected end.");
+		}
 	}
 
 }
