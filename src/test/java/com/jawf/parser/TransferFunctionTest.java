@@ -107,4 +107,21 @@ public class TransferFunctionTest extends TestCase {
     	}
     	
     }
+    
+    public void test5() {
+    	
+    	try {
+    		
+    		TransferFunction tfunc = new TransferFunction("\\\\", "");
+    		
+    		assertTrue(tfunc.isValid('\\'));
+    		
+    	} catch(Exception ex) {
+    		
+    		ex.printStackTrace();
+    		assertTrue(false);
+    		
+    	}
+    	
+    }
 }

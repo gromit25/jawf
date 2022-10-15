@@ -13,11 +13,11 @@ import java.util.HashMap;
  */
 public abstract class AbstractParser<T> {
 
-	/** */
+	/** 파싱 상태 변수 */
 	private String status;
-	/** */
+	/** 현재 파싱 트리의 루트 노드 */
 	private TreeNode<T> node;
-	/** */
+	/** 상태 변환시, 수행되는 전이함수(transfer function) 목록 */
 	private HashMap<String, HashMap<String, ArrayList<Method>>> transferHandlers;
 
 	/**
@@ -96,7 +96,8 @@ public abstract class AbstractParser<T> {
 	protected abstract HashMap<String, ArrayList<TransferFunction>> getTransferMap() throws Exception;
 	
 	/**
-	 * 
+	 * 파싱 시작시 수행
+	 * -> 파싱 시작과 동시에 다른 파서를 호출할 때 주로 사용됨
 	 */
 	protected void init() throws Exception {
 		// Do Nothing
@@ -104,7 +105,8 @@ public abstract class AbstractParser<T> {
 	}
 	
 	/**
-	 * 
+	 * 종료 문자 발생시 수행
+	 * -> 후처리 및 적절한 상태에서 종료되었는지 확인
 	 */
 	protected void processEod() throws Exception {
 		// Do Nothing
@@ -145,20 +147,21 @@ public abstract class AbstractParser<T> {
 	}
 	
 	/**
-	 * 
-	 * @param in
+	 * 파싱 수행
+	 * @param in 파싱할 문장의 Reader
 	 */
 	public TreeNode<T> parse(PushbackReader in) throws Exception {
 		
 		// 최초 시작시 실행
 		this.init();
 		
-		//
-		int read = in.read();
+		// 시작 상태로 상태 초기화
 		this.status = this.getStartStatus();
 		
-		//
-		//
+		// Reader에서 한문자씩 읽어들여 상태를 전환하고,
+		// 각 상태 전환에 따른 전이함수(transfer function)을 실행시킴 
+		int read = in.read();
+		
 		while(read != -1) {
 			
 			char ch = (char)read;
@@ -205,9 +208,6 @@ public abstract class AbstractParser<T> {
 			
 		} // End of while
 		
-		// End of data 발생시, 처리 수행
-		this.processEod();
-		
 		// 종료 상태 여부 확인
 		// 종료 상태가 아닌 경우, 예외 발생
 		boolean isEndStatus = false;
@@ -222,35 +222,13 @@ public abstract class AbstractParser<T> {
 			throw new Exception("Unexpected end status:" + status);
 		}
 		
+		// End of data(Eod) 발생시, 처리 수행
+		this.processEod();
+		
 		// 생성된 파싱 트리를 반환
 		return this.node;
 		
 	} // End of parse
-	
-	/**
-	 * 현재 파싱 상태가 종료에 속하는지 여부 반환
-	 * 현재 파싱 상태가 null 일 경우, false 반환
-	 * 종료 상태 목록이 null 일 경우, false 반환
-	 * @return 현재 파싱 상태가 종료에 속하는지 여부(속할 경우 true)
-	 */
-	protected boolean isEndStatus() {
-		
-		if(this.status == null) {
-			return false;
-		}
-		
-		if(this.getEndStatus() == null) {
-			return false;
-		}
-		
-		for(String endStatus: this.getEndStatus()) {
-			if(endStatus.equals(this.status) == true) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
 	
 	/**
 	 * 
