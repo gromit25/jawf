@@ -22,6 +22,7 @@ public class Message {
 	
 	
 	public <T> T get(String colName, Class<T> type) {
+		this.getTypes().get(colName);
 		return type.cast(this.getData().get(colName));
 	}
 	
