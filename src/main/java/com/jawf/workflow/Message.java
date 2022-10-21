@@ -19,11 +19,35 @@ public class Message {
 	private HashMap<String, Class<?>> types;
 	/** */
 	private HashMap<String, Object> data;
+
+	/**
+	 * 
+	 * @param colName
+	 * @return
+	 */
+	public Object get(String colName) throws Exception {
+		
+		if(this.getData().containsKey(colName) == false) {
+			throw new Exception("Column is not found: " + colName);
+		}
+		
+		return this.getData().get(colName);
+	}
 	
-	
-	public <T> T get(String colName, Class<T> type) {
-		this.getTypes().get(colName);
-		return type.cast(this.getData().get(colName));
+	/**
+	 * 
+	 * @param colName
+	 * @param type
+	 * @return
+	 */
+	public <T> T get(String colName, Class<T> type) throws Exception {
+		
+		Class<?> colType = this.getTypes().get(colName);
+		if(type.isAssignableFrom(colType) == false) {
+			throw new Exception("Unexpected type:" + colType + ", " + type);
+		}
+		
+		return type.cast(this.get(colName));
 	}
 	
 	/**
