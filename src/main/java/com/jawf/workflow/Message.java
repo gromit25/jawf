@@ -130,11 +130,12 @@ public class Message {
 	}
 	
 	/**
+	 * 컬럼의 데이터 반환
+	 * -> 요청된 타입으로 캐스팅하여 반환
 	 * 
-	 * 
-	 * @param colName
-	 * @param type
-	 * @return
+	 * @param colName 컬럼명
+	 * @param type 캐스팅할 타입
+	 * @return 컬럼의 데이터
 	 */
 	public <T> T get(String colName, Class<T> type) throws Exception {
 		
@@ -147,22 +148,17 @@ public class Message {
 	}
 	
 	/**
-	 * 
-	 * @param colName
-	 * @return
+	 * 컬럼의 데이터를 문자열 형태로 반환
+	 * @param colName 컬럼명
+	 * @return 데이터의 문자열
 	 */
 	public String getString(String colName) throws Exception {
-		
-		if(this.getData().containsKey(colName) == false) {
-			throw new Exception("Column is not found: " + colName);
-		}
-		
-		return this.getData().get(colName).toString();
+		return this.get(colName).toString();
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * 컬럼명 목록 반환
+	 * @return 컬럼명 목록
 	 */
 	private ArrayList<String> getColumnNames() {
 		
@@ -174,8 +170,8 @@ public class Message {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * 메시지 내 컬럼별 데이터의 타입(클래스) 반환
+	 * @return 메시지 내 컬럼별 데이터의 타입(클래스)
 	 */
 	private HashMap<String, Class<? extends Serializable>> getTypes() {
 		
@@ -187,8 +183,8 @@ public class Message {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * null을 허용하지 않는 컬럼 목록 반환
+	 * @return null을 허용하지 않는 컬럼 목록
 	 */
 	private Set<String> getMandatoryCols() {
 		
@@ -200,8 +196,8 @@ public class Message {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * 메시지 내 컬럼별 데이터 반환
+	 * @return 메시지 내 컬럼별 데이터
 	 */
 	private HashMap<String, Serializable> getData() {
 		
@@ -213,19 +209,38 @@ public class Message {
 	}
 	
 	/**
-	 * 
+	 * 현 메시지 객체를 문자열로 변환
 	 */
 	public String toString() {
 		
 		StringBuffer buffer = new StringBuffer();
 		
-		// 컬럼명 출력
+		// 컬럼 출력
 		for(String colName: this.getColumnNames()) {
+			
+			Class<? extends Serializable> type = this.getTypes().get(colName);
+			
+			buffer.append(colName)
+				.append("(")
+				.append(type.getSimpleName())
+				.append(")\t");
+		}
+		
+		buffer.append("\n");
+		
+		// 데이터 출력
+		for(String colName: this.getColumnNames()) {
+			
+			Serializable data = this.getData().get(colName);
+			
+			buffer.append(data.toString())
+				.append("\t");
 			
 		}
 		
-		// 데이터 출력
+		buffer.append("\n");
 		
+		// 출력 결과 반환
 		return buffer.toString();
 	}
 
