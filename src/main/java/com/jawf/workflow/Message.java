@@ -17,24 +17,22 @@ import lombok.Setter;
  */
 public class Message {
 	
-	/**
-	 * 메시지 처리 중요도
-	 */
+	/** 메시지 처리 중요도 */
 	@Getter
 	@Setter
 	private int priority;
 	
 	/** 컬럼명 목록 */
-	private ArrayList<String> colNames;
+	private volatile ArrayList<String> colNames;
 	/**
 	 * 메시지 내 컬럼별 데이터의 타입(클래스)
 	 * 컬럼의 타입은 Serializable을 구현한 클래스이어야 함
 	 * 이는 네트워크 통신이 발생하게 될 경우,
 	 * 데이터의 클래스가 Serializable이 아닐 경우 통신이 곤란함
 	 */
-	private HashMap<String, Class<? extends Serializable>> types;
+	private volatile HashMap<String, Class<? extends Serializable>> types;
 	/** null을 허용하지 않는 컬럼 목록 */
-	private Set<String> mandatoryCols;
+	private volatile Set<String> mandatoryCols;
 	
 	/** 메시지 내 컬럼별 데이터 */
 	private HashMap<String, Serializable> data;
