@@ -1,6 +1,7 @@
 package com.jawf.workflow;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,25 +16,32 @@ import lombok.Setter;
  * 
  * @author jmsohn
  */
-public class Message {
+public class Message implements Serializable, Comparable<Message>{
 	
+	/** */
+	private static final long serialVersionUID = -1765955650121239000L;
+
 	/** 메시지 처리 중요도 */
 	@Getter
 	@Setter
 	private int priority;
 	
 	/** 컬럼명 목록 */
-	private volatile ArrayList<String> colNames;
+	private ArrayList<String> colNames;
 	/**
 	 * 메시지 내 컬럼별 데이터의 타입(클래스)
 	 * 컬럼의 타입은 Serializable을 구현한 클래스이어야 함
 	 * 이는 네트워크 통신이 발생하게 될 경우,
 	 * 데이터의 클래스가 Serializable이 아닐 경우 통신이 곤란함
 	 */
-	private volatile HashMap<String, Class<? extends Serializable>> types;
+	private HashMap<String, Class<? extends Serializable>> types;
 	/** null을 허용하지 않는 컬럼 목록 */
-	private volatile Set<String> mandatoryCols;
+	private Set<String> mandatoryCols;
 	
+	/** 메시지 생성 시간 */
+	@Getter
+	@Setter
+	private ZonedDateTime time;
 	/** 메시지 내 컬럼별 데이터 */
 	private HashMap<String, Serializable> data;
 	
@@ -147,11 +155,31 @@ public class Message {
 	
 	/**
 	 * 컬럼의 데이터를 문자열 형태로 반환
+	 * 
 	 * @param colName 컬럼명
 	 * @return 데이터의 문자열
 	 */
 	public String getString(String colName) throws Exception {
 		return this.get(colName).toString();
+	}
+
+	/**
+	 * 다른 메시지와의 비교 메소드 구현(Comparable Interface)
+	 * 
+	 * @param o 비교 대상 메시지
+	 */
+	@Override
+	public int compareTo(Message o) {
+		
+		// priority가 높은 것부터 보냄
+		if(this.getPriority() < o.getPriority()) {
+			return 1;
+		} else if(this.getPriority() > o.getPriority()) {
+			return -1;
+		}
+		
+		// priority가 동일하면 시간이 빠른 메시지부터 보냄
+		return this.getTime().compareTo(o.getTime());
 	}
 	
 	/**
@@ -213,6 +241,9 @@ public class Message {
 		
 		StringBuffer buffer = new StringBuffer();
 		
+		// 메시지 시간 출력
+		buffer.append("Time:").append(this.getTime()).append("\n");
+		
 		// 컬럼 출력
 		for(String colName: this.getColumnNames()) {
 			
@@ -241,5 +272,6 @@ public class Message {
 		// 출력 결과 반환
 		return buffer.toString();
 	}
+
 
 }
