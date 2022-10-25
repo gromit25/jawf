@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +16,9 @@ import lombok.Setter;
  * @author jmsohn
  */
 public abstract class AbstractIngress extends AbstractComponent {
+	
+	/** 로깅 객체 */
+	private static final Logger logger = LoggerFactory.getLogger(AbstractIngress.class);
 	
 	/** 출력 큐 */
 	@Getter
@@ -38,6 +44,7 @@ public abstract class AbstractIngress extends AbstractComponent {
 	public void run() {
 		
 		// 시작시 호출
+		logger.info("start:" + this.getName());
 		this.init();
 		
 		// 수집된 메시지 목록 변수
@@ -68,12 +75,13 @@ public abstract class AbstractIngress extends AbstractComponent {
 				}
 				
 			} catch(Exception ex) {
-				//TODO 로깅
+				logger.error(this.getName(), ex);
 			}
 			
 		} while(hasEOD == false);
 		
 		// 종료시 호출
+		logger.info("destroy:" + this.getName());
 		this.destroy();
 	}
 	
