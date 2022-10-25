@@ -38,12 +38,12 @@ public class TransferFunctionBuilder {
 	 * 
 	 * @return
 	 */
-	public ArrayList<TransferFunction> build() throws Exception {
+	public ArrayList<Transfer> build() throws Exception {
 		
-		ArrayList<TransferFunction> transferFunctions = new ArrayList<TransferFunction>();
+		ArrayList<Transfer> transferFunctions = new ArrayList<Transfer>();
 		
 		for(String[] spec: this.specs) {
-			transferFunctions.add(new TransferFunction(spec[0], spec[1]));
+			transferFunctions.add(new Transfer(spec[0], spec[1]));
 		}
 		
 		

@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import com.jawf.parser.AbstractParser;
 import com.jawf.parser.TransferEventHandler;
-import com.jawf.parser.TransferFunction;
+import com.jawf.parser.Transfer;
 import com.jawf.parser.TransferFunctionBuilder;
 
 import lombok.Getter;
@@ -46,9 +46,9 @@ public class NumberParser extends AbstractParser<Instruction> {
 	}
 
 	@Override
-	protected HashMap<String, ArrayList<TransferFunction>> getTransferMap() throws Exception {
+	protected HashMap<String, ArrayList<Transfer>> getTransferMap() throws Exception {
 		
-		HashMap<String, ArrayList<TransferFunction>> transferMap = new HashMap<String, ArrayList<TransferFunction>>();
+		HashMap<String, ArrayList<Transfer>> transferMap = new HashMap<String, ArrayList<Transfer>>();
 		
 		transferMap.put("START", new TransferFunctionBuilder()
 				.add("0-9", "NUMBER")

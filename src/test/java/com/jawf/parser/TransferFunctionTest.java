@@ -33,7 +33,7 @@ public class TransferFunctionTest extends TestCase {
     	
     	try {
     		
-    		TransferFunction tfunc = new TransferFunction("a", "");
+    		Transfer tfunc = new Transfer("a", "");
     		
     		assertTrue(tfunc.isValid('a'));
     		assertFalse(tfunc.isValid('b'));
@@ -51,7 +51,7 @@ public class TransferFunctionTest extends TestCase {
     	
     	try {
     		
-    		TransferFunction tfunc = new TransferFunction(".", "");
+    		Transfer tfunc = new Transfer(".", "");
     		
     		assertTrue(tfunc.isValid('a'));
     		assertTrue(tfunc.isValid('b'));
@@ -71,7 +71,7 @@ public class TransferFunctionTest extends TestCase {
     	
     	try {
     		
-    		TransferFunction tfunc = new TransferFunction("#a-z", "");
+    		Transfer tfunc = new Transfer("#a-z", "");
     		
     		assertTrue(tfunc.isValid('a'));
     		assertTrue(tfunc.isValid('#'));
@@ -92,7 +92,7 @@ public class TransferFunctionTest extends TestCase {
     	
     	try {
     		
-    		TransferFunction tfunc = new TransferFunction("\\a-\\z", "");
+    		Transfer tfunc = new Transfer("\\a-\\z", "");
     		
     		assertTrue(tfunc.isValid('a'));
     		assertTrue(tfunc.isValid('d'));
@@ -112,7 +112,7 @@ public class TransferFunctionTest extends TestCase {
     	
     	try {
     		
-    		TransferFunction tfunc = new TransferFunction("\\\\", "");
+    		Transfer tfunc = new Transfer("\\\\", "");
     		
     		assertTrue(tfunc.isValid('\\'));
     		

@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
+ * 문자열 파싱하는 추상 클래스
+ * -> 상태 변환 내용 및 변환 이벤트 처리는 하위 클래스에서 처리함
+ *    본 클래스에서는 문자열을 읽고,
+ *    상태 변환 내용 및 상태 변환시 이벤트 핸들링 메소드를 호출함 
  * 
  * @author jmsohn
  */
@@ -90,10 +94,12 @@ public abstract class AbstractParser<T> {
 	protected abstract String[] getEndStatus();
 	
 	/**
+	 * 상태 변환 정보 반환
+	 * -> ex) "A" 상태에서 문자 "B"가 들어오면 "C" 상태로 변한다는 정보
 	 * 
 	 * @return
 	 */
-	protected abstract HashMap<String, ArrayList<TransferFunction>> getTransferMap() throws Exception;
+	protected abstract HashMap<String, ArrayList<Transfer>> getTransferMap() throws Exception;
 	
 	/**
 	 * 파싱 시작시 수행
@@ -174,7 +180,7 @@ public abstract class AbstractParser<T> {
 			boolean isMatched = false;
 			
 			//
-			for(TransferFunction transferFunction: this.getTransferMap().get(this.status)) {
+			for(Transfer transferFunction: this.getTransferMap().get(this.status)) {
 				if(transferFunction.isValid(ch) == true) {
 					
 					// 유효한 전이함수(transfer function)이 매치되었을 경우 true로 설정함

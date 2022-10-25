@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * 전이 함수 클래스
  * @author jmsohn
  */
-public class TransferFunction {
+public class Transfer {
 	
 	/** 문자 패턴 변수 */
 	private CharPattern pattern;
@@ -20,7 +20,7 @@ public class TransferFunction {
 	 * @param patternStr 다음 전이 상태로 이동시킬 문자 패턴
 	 * @param nextStatus 다음 전이 상태
 	 */
-	public TransferFunction(String patternStr, String nextStatus) throws Exception {
+	public Transfer(String patternStr, String nextStatus) throws Exception {
 		this.pattern = CharPatternParser.parse(patternStr);
 		this.nextStatus = nextStatus;
 	}
@@ -268,14 +268,14 @@ public class TransferFunction {
 						
 					} else if(ch == '.') {
 						
-						checkers.add(new TransferFunction.DotPatternChecker());
+						checkers.add(new Transfer.DotPatternChecker());
 						
 						isEscaped = false;
 						preChar = read;
 						
 					} else {
 						
-						checkers.add(new TransferFunction.CharPatternChecker(ch));
+						checkers.add(new Transfer.CharPatternChecker(ch));
 						
 						isEscaped = false;
 						preChar = read;
@@ -286,7 +286,7 @@ public class TransferFunction {
 					
 				case ESCAPE:
 					
-					checkers.add(new TransferFunction.CharPatternChecker(ch));
+					checkers.add(new Transfer.CharPatternChecker(ch));
 					
 					isEscaped = true;
 					preChar = read;
@@ -329,14 +329,14 @@ public class TransferFunction {
 					if(ch == '\\') {
 						status = ParsingStatus.UPPER_ESCAPE;
 					} else {
-						checkers.add(new TransferFunction.RangePatternChecker((char)preChar, ch));
+						checkers.add(new Transfer.RangePatternChecker((char)preChar, ch));
 						status = ParsingStatus.CHAR;
 					}
 					
 					break;
 					
 				case UPPER_ESCAPE:
-					checkers.add(new TransferFunction.RangePatternChecker((char)preChar, ch));
+					checkers.add(new Transfer.RangePatternChecker((char)preChar, ch));
 					status = ParsingStatus.CHAR;
 					break;
 					
