@@ -43,6 +43,10 @@ public abstract class AbstractIngress extends AbstractComponent {
 		// 수집된 메시지 목록 변수
 		ArrayList<Message> messages = null;
 		
+		// EOD 메시지 수집 여부 변수
+		boolean hasEOD = false;
+		
+		// 데이터 수집 및 출력 큐 전송
 		do {
 			
 			try {
@@ -51,9 +55,15 @@ public abstract class AbstractIngress extends AbstractComponent {
 				messages = this.acquisitMessages();
 				
 				// 출력큐로 데이터 출력
-				if(this.getOutqueue() != null) {
+				if(this.getOutqueue() != null && messages != null) {
 					for(Message message: messages) {
+						
 						this.getOutqueue().offer(message, this.getOutqueueTimeout(), TimeUnit.SECONDS);
+						
+						if(message instanceof EODMessage) {
+							hasEOD = true;
+						}
+						
 					}
 				}
 				
@@ -61,7 +71,7 @@ public abstract class AbstractIngress extends AbstractComponent {
 				//TODO 로깅
 			}
 			
-		} while(messages != null);
+		} while(hasEOD == false);
 		
 		// 종료시 호출
 		this.destroy();

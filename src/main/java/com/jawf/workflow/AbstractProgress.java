@@ -52,13 +52,15 @@ public abstract class AbstractProgress extends AbstractComponent {
 		// 시작시 호출
 		this.init();
 		
-		// 수집된 메시지 목록 변수
-		ArrayList<Message> messages = null;
+		// 수신된 메시지 변수
+		Message in = null;
+		
+		// EOD 메시지 수집 여부 변수
+		boolean hasEOD = false;
 		
 		do {
 			
 			// 입력큐로 부터 메시지 수신
-			Message in = null;
 			while(in == null) {
 				try {
 					in = this.getInqueue().poll(this.getInqueueTimeout(), TimeUnit.SECONDS);
@@ -70,12 +72,17 @@ public abstract class AbstractProgress extends AbstractComponent {
 			try {
 				
 				// 수신된 메시지 처리 후 결과 수집
-				ArrayList<Message> out = this.processMessages(in);
+				ArrayList<Message> messages = this.processMessages(in);
 				
 				// 결과를 출력 큐로 전송
-				if(this.getOutqueue() != null) {
-					for(Message message: out) {
+				if(this.getOutqueue() != null && messages != null) {
+					for(Message message: messages) {
+						
 						this.getOutqueue().offer(message, this.getOutqueueTimeout(), TimeUnit.SECONDS);
+						
+						if(message instanceof EODMessage) {
+							hasEOD = true;
+						}
 					}
 				}
 				
@@ -83,7 +90,7 @@ public abstract class AbstractProgress extends AbstractComponent {
 				//TODO 로깅
 			}
 			
-		} while(messages != null);
+		} while(hasEOD == false);
 		
 		// 종료시 호출
 		this.destroy();
