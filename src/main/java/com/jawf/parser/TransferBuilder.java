@@ -6,14 +6,14 @@ import java.util.ArrayList;
  * 
  * @author jmsohn
  */
-public class TransferFunctionBuilder {
+public class TransferBuilder {
 	
 	private ArrayList<String[]> specs;
 	
 	/**
 	 * 
 	 */
-	public TransferFunctionBuilder() {
+	public TransferBuilder() {
 		this.specs = new ArrayList<String[]>();
 	}
 	
@@ -23,7 +23,7 @@ public class TransferFunctionBuilder {
 	 * @param nextStatus
 	 * @return
 	 */
-	public TransferFunctionBuilder add(String pattern, String nextStatus) throws Exception {
+	public TransferBuilder add(String pattern, String nextStatus) throws Exception {
 		
 		String[] spec = new String[2];
 		spec[0] = pattern;

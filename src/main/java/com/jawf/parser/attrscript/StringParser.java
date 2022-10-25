@@ -6,7 +6,7 @@ import java.util.HashMap;
 import com.jawf.parser.AbstractParser;
 import com.jawf.parser.TransferEventHandler;
 import com.jawf.parser.Transfer;
-import com.jawf.parser.TransferFunctionBuilder;
+import com.jawf.parser.TransferBuilder;
 
 public class StringParser extends AbstractParser<Instruction> {
 	
@@ -35,18 +35,18 @@ public class StringParser extends AbstractParser<Instruction> {
 		
 		HashMap<String, ArrayList<Transfer>> transferMap = new HashMap<String, ArrayList<Transfer>>();
 		
-		transferMap.put("START", new TransferFunctionBuilder()
+		transferMap.put("START", new TransferBuilder()
 				.add("\"", "IN_STR")
 				.add("^\"", "FAIL")
 				.build());
 		
-		transferMap.put("IN_STR", new TransferFunctionBuilder()
+		transferMap.put("IN_STR", new TransferBuilder()
 				.add("\\\\", "ESCAPE")
 				.add("\"", "END")
 				.add("^\\\\\"", "IN_STR")
 				.build());
 		
-		transferMap.put("ESCAPE", new TransferFunctionBuilder()
+		transferMap.put("ESCAPE", new TransferBuilder()
 				.add(".", "IN_STR")
 				.build());
 		

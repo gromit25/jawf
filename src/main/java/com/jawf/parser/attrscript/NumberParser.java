@@ -6,7 +6,7 @@ import java.util.HashMap;
 import com.jawf.parser.AbstractParser;
 import com.jawf.parser.TransferEventHandler;
 import com.jawf.parser.Transfer;
-import com.jawf.parser.TransferFunctionBuilder;
+import com.jawf.parser.TransferBuilder;
 
 import lombok.Getter;
 
@@ -50,21 +50,21 @@ public class NumberParser extends AbstractParser<Instruction> {
 		
 		HashMap<String, ArrayList<Transfer>> transferMap = new HashMap<String, ArrayList<Transfer>>();
 		
-		transferMap.put("START", new TransferFunctionBuilder()
+		transferMap.put("START", new TransferBuilder()
 				.add("0-9", "NUMBER")
 				.build());
 		
-		transferMap.put("NUMBER", new TransferFunctionBuilder()
+		transferMap.put("NUMBER", new TransferBuilder()
 				.add("0-9", "NUMBER")
 				.add(".", "DOT")
 				.add("^0-9.", "END")
 				.build());
 		
-		transferMap.put("DOT", new TransferFunctionBuilder()
+		transferMap.put("DOT", new TransferBuilder()
 				.add("0-9", "FLOATING_NUMBER")
 				.build());
 		
-		transferMap.put("FLOATING_NUMBER", new TransferFunctionBuilder()
+		transferMap.put("FLOATING_NUMBER", new TransferBuilder()
 				.add("0-9", "FLOATING_NUMBER")
 				.add("^0-9", "END")
 				.build());
