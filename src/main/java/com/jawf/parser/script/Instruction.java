@@ -1,4 +1,4 @@
-package com.jawf.parser.attrscript;
+package com.jawf.parser.script;
 
 public class Instruction {
 

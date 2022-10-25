@@ -1,6 +1,6 @@
 package com.jawf;
 
-import com.jawf.parser.attrscript.NumberParser;
+import com.jawf.parser.script.NumberParser;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
