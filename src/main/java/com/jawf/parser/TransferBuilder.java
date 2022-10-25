@@ -48,7 +48,6 @@ public class TransferBuilder {
 			transferFunctions.add(new Transfer(spec[0], spec[1]));
 		}
 		
-		
 		return transferFunctions;
 	}
 }
