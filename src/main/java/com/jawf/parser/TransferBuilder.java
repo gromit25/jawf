@@ -3,15 +3,17 @@ package com.jawf.parser;
 import java.util.ArrayList;
 
 /**
+ * 전이함수 생성 클래스
  * 
  * @author jmsohn
  */
 public class TransferBuilder {
 	
+	/** */
 	private ArrayList<String[]> specs;
 	
 	/**
-	 * 
+	 * 생성자
 	 */
 	public TransferBuilder() {
 		this.specs = new ArrayList<String[]>();
