@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.jawf.parser.AbstractParser;
 import com.jawf.parser.TransferEventHandler;
+import com.jawf.workflow.instructions.Instruction;
 import com.jawf.parser.Transfer;
 import com.jawf.parser.TransferBuilder;
 
