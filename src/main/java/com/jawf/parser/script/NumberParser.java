@@ -81,7 +81,7 @@ public class NumberParser extends AbstractParser<Instruction> {
 		this.buffer.append(event.getChar());
 	}
 	
-	protected void processEod() throws Exception {
+	protected void exit() throws Exception {
 		this.number = Float.parseFloat(this.buffer.toString());
 	}
 

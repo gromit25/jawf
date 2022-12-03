@@ -118,7 +118,7 @@ public abstract class AbstractParser<T> {
 	protected abstract HashMap<String, ArrayList<Transfer>> getTransferMap() throws Exception;
 	
 	/**
-	 * 파싱 시작시 수행
+	 * 파싱 시작시 콜백
 	 * -> 파싱 시작과 동시에 다른 파서를 호출할 때 주로 사용됨
 	 */
 	protected void init() throws Exception {
@@ -127,7 +127,15 @@ public abstract class AbstractParser<T> {
 	}
 	
 	/**
-	 * 종료 문자 발생시 수행
+	 * 파싱 종료시 콜백
+	 */
+	protected void exit() throws Exception {
+		// Do Nothing
+		// 하위 클래스에서 필요시 구현
+	}
+	
+	/**
+	 * 종료 문자 발생시 콜백
 	 * -> 후처리 및 적절한 상태에서 종료되었는지 확인
 	 */
 	protected void processEod() throws Exception {
@@ -253,8 +261,8 @@ public abstract class AbstractParser<T> {
 			throw new Exception("Unexpected end status:" + status);
 		}
 		
-		// End of data(Eod) 발생시, 처리 수행
-		this.processEod();
+		// 파싱 종료 시 호출
+		this.exit();
 		
 		// 생성된 파싱 트리를 반환
 		return this.node;
